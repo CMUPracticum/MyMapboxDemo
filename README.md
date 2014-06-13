@@ -3,6 +3,7 @@
 
 # MyMapboxDemo
 Instead of using Gradle or Maven, this application imports the libraries in .jar files manually. Libraries used and their links are:
+
 1. Mapbox Android SDK - [0.2.3](http://search.maven.org/remotecontent?filepath=com/mapbox/mapboxsdk/mapbox-android-sdk/0.2.3/mapbox-android-sdk-0.2.3.jar)
 2. Android Support V4 - 19.1 (Located in Android SDK)
 3. OkHttp - [1.3.0](http://search.maven.org/remotecontent?filepath=com/squareup/okhttp/okhttp/1.3.0/okhttp-1.3.0-jar-with-dependencies.jar)
