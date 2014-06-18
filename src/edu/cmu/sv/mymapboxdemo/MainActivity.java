@@ -1,10 +1,16 @@
 package edu.cmu.sv.mymapboxdemo;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,58 +22,44 @@ import android.widget.Button;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.ITileLayer;
+import com.mapbox.mapboxsdk.tileprovider.tilesource.MBTilesLayer;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.MapboxTileLayer;
-import com.mapbox.mapboxsdk.views.MapController;
+import com.mapbox.mapboxsdk.tileprovider.tilesource.TileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.mapbox.mapboxsdk.views.util.TilesLoadedListener;
 
 public class MainActivity extends Activity {
-	
-	private static final String MSG_TAG = "MainActivity";
 
+	public static final String MSG_TAG = "MainActivity";
+
+//	Maps
     private MapView mv;
-    private String satellite = "brunosan.map-cyglrrfu";
-    private String street = "examples.map-i87786ca";
-    private String terrain = "examples.map-zgrqqx0w";
-    private String currentLayer = "satellite";
-	
+    private final String MY_MAP = "Test01.mbtiles";
+    private final String TERRAIN = "examples.map-zgrqqx0w";
+    private String currentLayer = MY_MAP;
+    
+//  Assets
+	private static String ASSETS_PATH = Environment.getExternalStorageDirectory().getPath() + "/trailscribe/";
+    private static String[] assets = {"maptiles/Test01.mbtiles"};
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
         mv = (MapView) findViewById(R.id.mapview);
+        
+//        TODO Find a faster way to copy the tiles
+//        copyAssets();
 
-		MapController mapController = (MapController) mv.getController();
-        replaceMapView(satellite);
+//		MapController mapController = (MapController) mv.getController();
+		
+        replaceMapView(MY_MAP);
         addLocationOverlay();
 
         mv.loadFromGeoJSONURL("https://gist.githubusercontent.com/tmcw/10307131/raw/21c0a20312a2833afeee3b46028c3ed0e9756d4c/map.geojson");
         setButtonListeners();
-        Marker m = new Marker(mv, "Ching's home", "Taipei, Taiwan", new LatLng(25.0333, 121.6333));
-        m.setIcon(new Icon(this, Icon.Size.SMALL, "marker-stroked", "FF0000"));
-        mv.addMarker(m);
-
-        m = new Marker(mv, "Isil's home", "Istanbul, Turkey", new LatLng(41.0136, 28.9550));
-        m.setIcon(new Icon(this, Icon.Size.SMALL, "city", "FFFF00"));
-        mv.addMarker(m);
-
-        m = new Marker(mv, "David's home", "Kaohsiung", new LatLng(22.6333, 120.2667));
-        m.setIcon(new Icon(this, Icon.Size.SMALL, "land-use", "00FFFF"));
-        mv.addMarker(m);
-
-        m = new Marker(mv, "Mia's home", "Manila, Philippines", new LatLng(14.5833, 120.9667));
-        m.setIcon(new Icon(getBaseContext(), Icon.Size.SMALL, "land-use", "00FF00"));
-        mv.addMarker(m);
-
-        m = new Marker(mv, "Emi's home", "Buenos Aires, Argentina", new LatLng(-34.6033, -58.3817));
-        m.setIcon(new Icon(getBaseContext(), Icon.Size.SMALL, "land-use", "00FF00"));
-        mv.addMarker(m);
 
         mv.setOnTilesLoadedListener(new TilesLoadedListener() {
             @Override
@@ -103,29 +95,30 @@ public class MainActivity extends Activity {
 	}
 	
     protected void replaceMapView(String layer) {
-        ITileLayer source;
-        BoundingBox box;
-
-        source = new MapboxTileLayer(layer);
-
-        mv.setTileSource(source);
-        box = source.getBoundingBox();
-        mv.setScrollableAreaLimit(box);
+    	BoundingBox box;
+    	
+    	TileLayer source = null;
+    	if (layer.equals(MY_MAP)) {
+    		source = new MBTilesLayer(ASSETS_PATH + "Test01.mbtiles");
+    	} else {
+    		source = new MapboxTileLayer(layer);
+    	}
+    	
+    	mv.setTileSource(source);
+    	box = source.getBoundingBox();
+    	mv.setScrollableAreaLimit(box);
         mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
         mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
         mv.setCenter(mv.getTileProvider().getCenterCoordinate());
-        mv.setZoom(0);
+        mv.setZoom(mv.getTileProvider().getMinimumZoomLevel());
     }
 
     private void addLocationOverlay() {
-//    	TODO
-//    	NullPointer error at line 129 
-        // Adds an icon that shows location
-//		UserLocationOverlay myLocationOverlay = new UserLocationOverlay(new GpsLocationProvider(this), mv);
-//		
-//        myLocationOverlay.enableMyLocation();
-//        myLocationOverlay.setDrawAccuracyEnabled(true);
-//        mv.getOverlays().add(myLocationOverlay);
+    	Marker m;
+    	
+    	m = new Marker(mv, "CMUSV", "Buliding 23", new LatLng(37.4104, -122.0598));
+    	m.setIcon(new Icon(this, Icon.Size.SMALL, "marker-stroked", "FF0000"));
+    	mv.addMarker(m);
     }
 
     private Button changeButtonTypeface(Button button) {
@@ -141,13 +134,13 @@ public class MainActivity extends Activity {
     }
     
     private void setButtonListeners() {
-        Button satBut = changeButtonTypeface((Button) findViewById(R.id.satbut));
-        satBut.setOnClickListener(new View.OnClickListener() {
+        Button mymapBut = changeButtonTypeface((Button) findViewById(R.id.mymapbut));
+        mymapBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!currentLayer.equals("satellite")) {
-                    replaceMapView(satellite);
-                    currentLayer = "satellite";
+                if (!currentLayer.equals("mymap")) {
+                    replaceMapView(MY_MAP);
+                    currentLayer = "mymap";
                 }
             }
         });
@@ -156,29 +149,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (!currentLayer.equals("terrain")) {
-                    replaceMapView(terrain);
+                    replaceMapView(TERRAIN);
                     currentLayer = "terrain";
                 }
-            }
-        });
-        Button strBut = changeButtonTypeface((Button) findViewById(R.id.strbut));
-        strBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!currentLayer.equals("street")) {
-                    replaceMapView(street);
-                    currentLayer = "street";
-                }
-            }
-        });
-        Button bugsBut = changeButtonTypeface((Button) findViewById(R.id.bugsButton));
-        bugsBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://github.com/mapbox/mapbox-android-sdk/issues?state=open";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
             }
         });
     }
@@ -197,4 +170,52 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	private void copyAssets() {
+		File directory = new File(ASSETS_PATH);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		
+		AssetManager assetManager = this.getAssets();
+
+		try {
+			assets = assetManager.list("");
+		} catch (IOException e) {
+			Log.e(MSG_TAG, "Failed to get asset file list.", e);
+		}
+
+		for (String filename : assets) {
+			InputStream in = null;
+			OutputStream out = null;
+			
+			try {
+				in = assetManager.open(filename);
+				String newFileName = ASSETS_PATH + filename;
+				out = new FileOutputStream(newFileName);
+				
+				byte[] buffer = new byte[1024];
+				int read;
+				
+				while ((read = in.read(buffer)) != -1) {
+					out.write(buffer, 0, read);
+				}
+				
+				in.close();
+				out.flush();
+				out.close();
+				
+				in = null;
+				out = null;
+				
+				File newFile = new File(newFileName);
+				if (newFile.exists()) {
+					Log.d(MSG_TAG, filename + "is copied to " + newFile.getAbsolutePath());
+				} else {
+					Log.d(MSG_TAG, "Failed to copy" + filename);
+				}
+			} catch (Exception e) {
+				Log.e(MSG_TAG, e.getMessage());
+			}
+		}
+	}
 }
