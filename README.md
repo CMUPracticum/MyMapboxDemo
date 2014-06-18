@@ -22,6 +22,8 @@ Instead of using Gradle or Maven, this application imports the libraries in .jar
 
 Then you should be able to run the application on devices.
 
+![ScreenShot](https://raw.githubusercontent.com/CMUPracticum/MyMapboxDemo/master/screenshot.png)
+
 ======
 
 Ching-Lun Lin, clallenlin@gmail.com
