@@ -17,8 +17,10 @@ Instead of using Gradle or Maven, this application imports the libraries in .jar
     - Include .jar files from /libs/ (*Optional: mapbox-android-sdk-0.2.3-javadoc.jar and mapbox-android-sdk-0.2.3-sources.jar should be included as source attachment and Javadoc location of mapbox-android-sdk-0.2.3.jar*)
 4. Clean and build project
 5. Please note that the tiles should be manually copied to sdcard now (this will be fixed).
-    - $ cd ~/<Android SDK Path>/platform-tools
-    - $ sudo ./adb push ~/<MyMapboxDemo Path>/assets/Test01.mbtiles /mnt/sdcard/trailscribe/
+    - $ cd ~/Android SDK Path/platform-tools
+    - $ sudo ./adb shell
+    - (enter adb shell) $ cd sdcard; mkdir trailscribe; exit
+    - $ sudo ./adb push ~/MyMapboxDemo Path/assets/Test01.mbtiles /mnt/sdcard/trailscribe/
 
 Then you should be able to run the application on devices.
 
