@@ -26,12 +26,10 @@ public final class R {
         public static final int mblogo=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f080006;
-        public static final int bugsButton=0x7f080005;
+        public static final int action_settings=0x7f080004;
         public static final int buttonsrow=0x7f080001;
         public static final int mapview=0x7f080000;
-        public static final int satbut=0x7f080002;
-        public static final int strbut=0x7f080004;
+        public static final int mymapbut=0x7f080002;
         public static final int terbut=0x7f080003;
     }
     public static final class layout {
@@ -45,9 +43,8 @@ public final class R {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int menu_settings=0x7f050002;
-        public static final int reportBugs=0x7f050006;
-        public static final int satellite=0x7f050003;
-        public static final int street=0x7f050005;
+        public static final int my_map=0x7f050003;
+        public static final int reportBugs=0x7f050005;
         public static final int terrain=0x7f050004;
     }
     public static final class style {
